@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery Coach Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .chat-container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .user-message, .bot-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background: #007BFF;
+            color: white;
+            text-align: right;
+        }
+        .bot-message {
+            background: #f1f1f1;
+            color: black;
+            text-align: left;
+        }
+        .input-container {
+            margin-top: 10px;
+            display: flex;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .goal-container {
+            margin-top: 20px;
+            padding: 10px;
+            background: #eaf6ff;
+            border-radius: 5px;
+        }
+        #savedGoal {
+            font-weight: bold;
+            color: #007BFF;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <h2>Recovery Coach Chat</h2>
+        <div class="chat-box" id="chatBox">
+            <div class="bot-message">👋 Hello! I'm your Recovery Coach. How can I support you today?</div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+        <div class="goal-container">
+            <h3>Set Your Recovery Goal 🎯</h3>
+            <input type="text" id="goalInput" placeholder="Enter your goal...">
+            <button onclick="setGoal()">Save Goal</button>
+            <p id="savedGoal"></p>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("userInput").value.trim();
+            if (userInput === "") return;
+
+            var chatBox = document.getElementById("chatBox");
+
+            var userMessage = document.createElement("div");
+            userMessage.className = "user-message";
+            userMessage.textContent = userInput;
+            chatBox.appendChild(userMessage);
+
+            var botMessage = document.createElement("div");
+            botMessage.className = "bot-message";
+            botMessage.textContent = getBotResponse(userInput);
+            chatBox.appendChild(botMessage);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+            document.getElementById("userInput").value = "";
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function getBotResponse(input) {
+            input = input.toLowerCase(); 
+            
+            const responses = {
+    "motivation": [
+        "💪 Keep pushing forward! Every day in recovery is a victory.",
+        "What motivates you to keep going, even on tough days?",
+        "How do you remind yourself of your progress when motivation fades?",
+        "What’s one thing that inspires you to stay on track?"
+    ],
+    "cravings": [
+        "🚀 Cravings are temporary. Try deep breathing, a short walk, or reaching out to a support friend.",
+        "What strategies have worked best for you when dealing with cravings?",
+        "Who can you reach out to when cravings feel overwhelming?",
+        "What positive activity can you do instead of giving in to a craving?"
+    ],
+    "relapse": [
+        "Relapse doesn't mean failure. Take it as a lesson, seek support, and refocus on your recovery goals.",
+        "What steps can you take to learn from a relapse and move forward?",
+        "Who can you reach out to for support if you're struggling?",
+        "What changes can you make to your daily routine to stay on track?"
+    ],
+    "goal": [
+        "🎯 Setting goals keeps you focused. What's your biggest goal right now?",
+        "What small steps can you take today toward your goal?",
+        "How do you track your progress toward your recovery goals?",
+        "Who can help hold you accountable for achieving your goals?"
+    ],
+    "stress": [
+        "🧘 Stress management is key! Try meditation, journaling, or talking to someone who understands.",
+        "What helps you feel calmer during stressful moments?",
+        "How do you prioritize self-care when stress builds up?",
+        "What relaxation techniques have worked best for you?"
+    ],
+    "help": [
+        "📞 Need immediate support? Call a counselor or a recovery hotline.",
+        "Who in your support system can you reach out to for help?",
+        "What’s the hardest part about asking for help?",
+        "How can you remind yourself that seeking help is a strength?"
+    ],
+    "anxiety": [
+        "🌿 Anxiety can feel overwhelming, but deep breathing and grounding exercises can help.",
+        "What techniques help you manage anxious thoughts?",
+        "How can you bring yourself back to the present moment?",
+        "What is one small action you can take to ease anxiety right now?"
+    ],
+    "depression": [
+        "💙 You're not alone. Try small steps like journaling, exercising, or talking to a loved one.",
+        "What has helped you in the past when you’ve felt low?",
+        "Who in your life brings you comfort and understanding?",
+        "What’s one thing you can do today to practice self-kindness?"
+    ],
+    "exercise": [
+        "🏃 Exercise releases endorphins and boosts mood! A simple walk can help.",
+        "What type of physical activity do you enjoy the most?",
+        "How does exercise make you feel emotionally and physically?",
+        "How can you incorporate more movement into your daily routine?"
+    ],
+    "sleep": [
+        "😴 A good night's sleep is essential. Try limiting screen time and using relaxation techniques.",
+        "What helps you wind down before bed?",
+        "How can you improve your sleep environment for better rest?",
+        "What’s your ideal nighttime routine for quality sleep?"
+    ],
+    "lonely": [
+        "🤝 You are never alone. Reach out to a friend or join a recovery group.",
+        "Who can you connect with today for support?",
+        "What’s one way to engage with a supportive community?",
+        "How do you remind yourself that you are valued?"
+    ],
+    "grateful": [
+        "🙏 Practicing gratitude can shift your mindset. What’s something you're grateful for today?",
+        "How does focusing on gratitude change your outlook?",
+        "What’s one small thing that brought you joy today?",
+        "How can you make gratitude a daily habit?"
+    ],
+    "self care": [
+        "💆 Taking care of yourself is important. Have you done something kind for yourself today?",
+        "What is your favorite self-care activity?",
+        "How do you know when you need to take a break?",
+        "What helps you recharge emotionally?"
+    ],
+    "anger": [
+        "🔥 Anger is a natural emotion. Try deep breathing, counting, or stepping away for a moment.",
+        "What healthy ways help you express anger?",
+        "How do you cool down when emotions run high?",
+        "What past experiences help you manage anger better?"
+    ],
+    "panic": [
+        "🌬️ Breathe in for 4 seconds, hold for 4, exhale for 4. You're safe.",
+        "What grounding techniques help you during a panic moment?",
+        "How can you remind yourself that this feeling will pass?",
+        "Who can you reach out to for comfort during a panic attack?"
+    ],
+    "disappointed": [
+        "💙 It's okay to feel disappointed. Focus on what you can control and keep moving forward.",
+        "How do you process disappointment in a healthy way?",
+        "What’s one lesson you can learn from this experience?",
+        "How can you reframe disappointment into growth?"
+    ],
+    "triggered": [
+        "🚦 Identify your triggers and develop a coping strategy. What helps you stay grounded?",
+        "What are some early warning signs that you’re feeling triggered?",
+        "How do you prepare for triggering situations?",
+        "What support systems help you manage your triggers?"
+    ],
+    "recovery": [
+        "🌱 Recovery is a journey, not a race. You're making progress every day.",
+        "What has been your biggest recovery milestone so far?",
+        "What keeps you committed to your recovery?",
+        "How do you celebrate your progress?"
+    ],
+    "relax": [
+        "🌊 Try relaxing with music, deep breathing, or a calming tea.",
+        "What’s your favorite way to relax after a long day?",
+        "How does relaxation impact your overall well-being?",
+        "What new relaxation techniques would you like to try?"
+    ],
+    "friendship": [
+        "🤗 Strong friendships can be a great support system. Reach out to a trusted friend today.",
+        "How do supportive friends impact your recovery?",
+        "What qualities do you value in a friend?",
+        "How can you strengthen your current friendships?"
+    ],
+    "therapy": [
+        "🧠 Therapy can provide great insights. Have you considered speaking with a counselor?",
+        "What do you hope to gain from therapy?",
+        "How do you feel after a good therapy session?",
+        "What challenges have you worked through in therapy?"
+    ],
+    "accountability": [
+        "📅 Stay accountable to yourself and others. Consistency is key!",
+        "Who helps keep you accountable in your recovery journey?",
+        "How do you track your progress toward your goals?",
+        "What strategies help you stay consistent?"
+    ],
+    "growth": [
+        "🌱 Every challenge is an opportunity for growth. Keep learning.",
+        "What’s one thing you’ve learned about yourself in recovery?",
+        "How do you embrace change as part of your growth?",
+        "What personal growth milestone are you most proud of?"
+    ],
+    "forgiveness": [
+        "💖 Forgive yourself and others. Healing starts with letting go.",
+        "How does forgiveness play a role in your recovery?",
+        "What steps can you take to practice self-forgiveness?",
+        "Who in your life do you need to extend grace to?"
+    ],
+    "boundaries": [
+        "🚧 Setting healthy boundaries is essential for self-care and respect.",
+        "What boundaries help protect your well-being?",
+        "How do you communicate your boundaries to others?",
+        "What challenges do you face when enforcing boundaries?"
+    ],
+    "patience": [
+        "⏳ Progress takes time. Be patient with yourself and your journey.",
+        "How do you remind yourself to trust the process?",
+        "What helps you stay patient during difficult moments?",
+        "How has patience helped you grow in recovery?"
+    ],
+    "self worth": [
+        "✨ You are worthy of happiness and healing. Believe in yourself!",
+        "What affirmations remind you of your self-worth?",
+        "How do you practice self-love each day?",
+        "What past experiences shaped how you view your self-worth?"
+    ],
+    "letting go": [
+        "🍃 Release what no longer serves you and make space for growth.",
+        "What’s one thing you need to let go of today?",
+        "How do you handle emotions tied to past regrets?",
+        "What practices help you embrace the present moment?"
+    ],
+    "emotions": [
+        "🌊 Feel your emotions without judgment. They are valid and temporary.",
+        "How do you process difficult emotions in a healthy way?",
+        "What emotions have been the hardest for you to navigate?",
+        "Who supports you when you're experiencing strong emotions?"
+    ],
+    "hope": [
+        "🌟 Never lose hope. Even the darkest nights end with sunrise.",
+        "What gives you hope in your recovery journey?",
+        "How do you inspire hope in others?",
+        "What helps you stay hopeful even on difficult days?"
+    ],
+    "trust": [
+        "🤝 Trust the process. Your journey is unfolding as it should.",
+        "Who do you trust the most in your support system?",
+        "How has trusting yourself helped in your recovery?",
+        "What does rebuilding trust look like for you?"
+    ],
+    "balance": [
+        "⚖️ A balanced life leads to lasting recovery. Prioritize your well-being.",
+        "What areas of your life need more balance?",
+        "How do you make time for both work and self-care?",
+        "What daily habits help you maintain balance?"
+    ],
+    "joy": [
+        "😊 Find joy in small moments. Recovery is about reclaiming happiness.",
+        "What’s something that brings you joy?",
+        "How do you cultivate happiness in your daily life?",
+        "What past joyful memories inspire you to keep going?"
+    ],
+    "resilience": [
+        "💪 You are stronger than you think. Keep pushing forward.",
+        "What’s the toughest challenge you’ve overcome?",
+        "How do you build resilience after setbacks?",
+        "What strengths have you discovered through adversity?"
+    ],
+    "reflection": [
+        "🔍 Reflect on your progress. Every step matters.",
+        "What has been your biggest lesson in recovery?",
+        "How do you use reflection to guide your future choices?",
+        "What’s one thing you’ve learned about yourself recently?"
+    ],
+    "surrender": [
+        "🕊️ Let go of what you can't control and focus on what you can.",
+        "What do you need to surrender to find peace?",
+        "How do you remind yourself to release control?",
+        "What has surrendering taught you about life?"
+    ],
+    "perspective": [
+        "🔄 Shift your perspective—challenges can become opportunities.",
+        "How do you reframe negative thoughts?",
+        "What new perspectives have helped in your recovery?",
+        "How does gratitude change your outlook on life?"
+    ],
+    "perseverance": [
+        "🏋️ Keep going, even when it's hard. You’re building strength.",
+        "What keeps you going during tough times?",
+        "How do you stay committed to your goals?",
+        "What’s one moment where you refused to give up?"
+    ],
+    "kindness": [
+        "💛 Be kind to yourself. You deserve love and understanding.",
+        "How do you show kindness to yourself?",
+        "What’s a simple act of kindness you can do today?",
+        "Who in your life inspires you to be kind?"
+    ],
+    "gratitude": [
+        "🌻 Gratitude changes everything. What’s one thing you’re thankful for today?",
+        "How does gratitude impact your mood?",
+        "What are three things you’re grateful for this week?",
+        "How do you incorporate gratitude into your daily life?"
+    ],
+    "purpose": [
+        "🎯 Find your purpose in your recovery journey.",
+        "What drives you to keep moving forward?",
+        "How has your purpose changed throughout recovery?",
+        "What’s one step you can take toward fulfilling your purpose?"
+    ],
+    "peace": [
+        "☮️ Inner peace comes from acceptance and growth.",
+        "What helps you feel at peace?",
+        "How do you create a peaceful environment for yourself?",
+        "What steps can you take to protect your peace?"
+    ],
+    "self discipline": [
+        "💪 Discipline in small actions leads to big results.",
+        "What habits help you stay disciplined?",
+        "How do you motivate yourself when discipline feels hard?",
+        "What’s one area where you’d like to build more discipline?"
+    ],
+    "learning": [
+        "📖 Every experience is a lesson. Keep learning and growing.",
+        "What’s one valuable lesson you've learned in recovery?",
+        "How do you apply past experiences to your current journey?",
+        "What new skills or knowledge are you currently exploring?"
+    ],
+    "determination": [
+        "🔥 Your determination will push you through tough times.",
+        "What fuels your determination?",
+        "How do you stay strong when challenges arise?",
+        "What’s one goal you’ve achieved through perseverance?"
+    ],
+    "energy": [
+        "⚡ Protect your energy and surround yourself with positivity.",
+        "What activities drain your energy the most?",
+        "How do you recharge when you’re feeling drained?",
+        "What people or activities give you the most energy?"
+    ],
+    "connection": [
+        "🔗 Connect with others who understand your journey.",
+        "Who in your life makes you feel most supported?",
+        "How do you strengthen meaningful connections?",
+        "What does a healthy connection look like to you?"
+    ],
+    "choices": [
+        "🎭 Every day, you have the power to make positive choices.",
+        "How do you make decisions that align with your values?",
+        "What’s a past choice you’re proud of?",
+        "How do you handle difficult choices?"
+    ],
+    "self love": [
+        "💖 Love yourself as you heal and grow.",
+        "What’s one way you can show yourself love today?",
+        "How do you remind yourself that you are enough?",
+        "What are some self-love practices you enjoy?"
+    ],
+    "faith": [
+        "🙏 Have faith in yourself and your journey.",
+        "What role does faith play in your recovery?",
+        "How do you strengthen your belief in yourself?",
+        "What keeps you hopeful for the future?"
+    ],
+    "accountability": [
+        "📅 Stay accountable to yourself and others. Consistency is key!",
+        "Who helps keep you accountable in your recovery journey?",
+        "How do you track your progress toward your goals?",
+        "What strategies help you stay consistent?"
+    ],
+    "anger": [
+        "🔥 Anger is a natural emotion. Try deep breathing, counting, or stepping away for a moment.",
+        "What healthy ways help you express anger?",
+        "How do you cool down when emotions run high?",
+        "What past experiences help you manage anger better?"
+    ],
+    "anxiety": [
+        "🌿 Anxiety can feel overwhelming, but deep breathing and grounding exercises can help.",
+        "What techniques help you manage anxious thoughts?",
+        "How can you bring yourself back to the present moment?",
+        "What is one small action you can take to ease anxiety right now?"
+    ],
+    "balance": [
+        "⚖️ A balanced life leads to lasting recovery. Prioritize your well-being.",
+        "What areas of your life need more balance?",
+        "How do you make time for both work and self-care?",
+        "What daily habits help you maintain balance?"
+    ],
+    "boredom": [
+        "🎨 Engage in something creative! Music, art, or reading can be great outlets.",
+        "What hobbies have you been meaning to try?",
+        "How do you keep your mind engaged in a healthy way?",
+        "What activities bring you a sense of purpose?"
+    ],
+    "boundaries": [
+        "🚧 Setting healthy boundaries is essential for self-care and respect.",
+        "What boundaries help protect your well-being?",
+        "How do you communicate your boundaries to others?",
+        "What challenges do you face when enforcing boundaries?"
+    ],
+    "change": [
+        "🔄 Change can be hard, but it's part of growth. Trust the process.",
+        "What’s a major change you’ve embraced recently?",
+        "How do you stay open to new possibilities?",
+        "What positive changes are you working toward?"
+    ],
+    "compassion": [
+        "💜 Be compassionate to yourself and others.",
+        "How do you show compassion to those around you?",
+        "What’s one act of kindness you can do today?",
+        "How does self-compassion impact your recovery?"
+    ],
+    "connection": [
+        "🔗 Connect with others who understand your journey.",
+        "Who in your life makes you feel most supported?",
+        "How do you strengthen meaningful connections?",
+        "What does a healthy connection look like to you?"
+    ],
+    "depression": [
+        "💙 You're not alone. Try small steps like journaling, exercising, or talking to a loved one.",
+        "What has helped you in the past when you’ve felt low?",
+        "Who in your life brings you comfort and understanding?",
+        "What’s one thing you can do today to practice self-kindness?"
+    ],
+    "determination": [
+        "🔥 Your determination will push you through tough times.",
+        "What fuels your determination?",
+        "How do you stay strong when challenges arise?",
+        "What’s one goal you’ve achieved through perseverance?"
+    ],
+    "disappointed": [
+        "💙 It's okay to feel disappointed. Focus on what you can control and keep moving forward.",
+        "How do you process disappointment in a healthy way?",
+        "What’s one lesson you can learn from this experience?",
+        "How can you reframe disappointment into growth?"
+    ],
+    "exercise": [
+        "🏃 Exercise releases endorphins and boosts mood! A simple walk can help.",
+        "What type of physical activity do you enjoy the most?",
+        "How does exercise make you feel emotionally and physically?",
+        "How can you incorporate more movement into your daily routine?"
+    ],
+    "faith": [
+        "🙏 Have faith in yourself and your journey.",
+        "What role does faith play in your recovery?",
+        "How do you strengthen your belief in yourself?",
+        "What keeps you hopeful for the future?"
+    ],
+    "family": [
+        "🏡 Family support can be helpful. Have you talked with someone close to you?",
+        "How does family impact your recovery?",
+        "What healthy boundaries do you set with family members?",
+        "How do you navigate family relationships in a positive way?"
+    ],
+    "forgiveness": [
+        "💖 Forgive yourself and others. Healing starts with letting go.",
+        "How does forgiveness play a role in your recovery?",
+        "What steps can you take to practice self-forgiveness?",
+        "Who in your life do you need to extend grace to?"
+    ],
+    "goals": [
+        "🎯 Setting goals keeps you focused. What's your biggest goal right now?",
+        "What small steps can you take today toward your goal?",
+        "How do you track your progress toward your recovery goals?",
+        "Who can help hold you accountable for achieving your goals?"
+    ],
+    "grateful": [
+        "🙏 Practicing gratitude can shift your mindset. What’s something you're grateful for today?",
+        "How does focusing on gratitude change your outlook?",
+        "What’s one small thing that brought you joy today?",
+        "How can you make gratitude a daily habit?"
+    ],
+    "growth": [
+        "🌱 Every challenge is an opportunity for growth. Keep learning.",
+        "What’s one thing you’ve learned about yourself in recovery?",
+        "How do you embrace change as part of your growth?",
+        "What personal growth milestone are you most proud of?"
+    ],
+    "healing": [
+        "🌿 Healing takes time, patience, and self-love.",
+        "What does healing mean to you?",
+        "How do you recognize when you’re making progress?",
+        "What activities help you feel more whole?"
+    ],
+    "hope": [
+        "🌟 Never lose hope. Even the darkest nights end with sunrise.",
+        "What gives you hope in your recovery journey?",
+        "How do you inspire hope in others?",
+        "What helps you stay hopeful even on difficult days?"
+    ],
+    "joy": [
+        "😊 Find joy in small moments. Recovery is about reclaiming happiness.",
+        "What’s something that brings you joy?",
+        "How do you cultivate happiness in your daily life?",
+        "What past joyful memories inspire you to keep going?"
+    ],
+    "motivation": [
+        "💪 Keep pushing forward! Every day in recovery is a victory.",
+        "What motivates you to keep going, even on tough days?",
+        "How do you remind yourself of your progress when motivation fades?",
+        "What’s one thing that inspires you to stay on track?"
+    ],
+    "overwhelmed": [
+        "🌿 Take a step back and breathe. Break things into smaller, manageable tasks.",
+        "How do you manage overwhelming emotions?",
+        "What self-care practices help when you feel overloaded?",
+        "Who can you turn to for support during stressful times?"
+    ],
+    "positivity": [
+        "🌞 A positive mindset can change everything. Focus on the good, no matter how small.",
+        "How do you shift your mindset toward positivity?",
+        "What’s one good thing that happened to you today?",
+        "How can you create a more positive environment for yourself?"
+    ],
+    "recovery": [
+        "🌱 Recovery is a journey, not a race. You're making progress every day.",
+        "What has been your biggest recovery milestone so far?",
+        "What keeps you committed to your recovery?",
+        "How do you celebrate your progress?"
+    ],
+    "resilience": [
+        "💪 You are stronger than you think. Keep pushing forward.",
+        "What’s the toughest challenge you’ve overcome?",
+        "How do you build resilience after setbacks?",
+        "What strengths have you discovered through adversity?"
+    ],
+    "relapse": [
+        "🔄 Relapse doesn't mean failure. Take it as a lesson, seek support, and refocus on your recovery goals.",
+        "What steps can you take to learn from a relapse and move forward?",
+        "Who can you reach out to for support if you're struggling?",
+        "What changes can you make to your daily routine to stay on track?"
+    ],
+    "self-care": [
+        "💆 Taking care of yourself is important. Have you done something kind for yourself today?",
+        "What is your favorite self-care activity?",
+        "How do you know when you need to take a break?",
+        "What helps you recharge emotionally?"
+    ],
+    "self-discipline": [
+        "💪 Discipline in small actions leads to big results.",
+        "What habits help you stay disciplined?",
+        "How do you motivate yourself when discipline feels hard?",
+        "What’s one area where you’d like to build more discipline?"
+    ],
+    "self-love": [
+        "💖 Love yourself as you heal and grow.",
+        "What’s one way you can show yourself love today?",
+        "How do you remind yourself that you are enough?",
+        "What are some self-love practices you enjoy?"
+    ],
+    "self-worth": [
+        "✨ You are worthy of happiness and healing. Believe in yourself!",
+        "What affirmations remind you of your self-worth?",
+        "How do you practice self-love each day?",
+        "What past experiences shaped how you view your self-worth?"
+    ],
+    "stress": [
+        "🧘 Stress management is key! Try meditation, journaling, or talking to someone who understands.",
+        "What helps you feel calmer during stressful moments?",
+        "How do you prioritize self-care when stress builds up?",
+        "What relaxation techniques have worked best for you?"
+    ],
+    "support": [
+        "🤝 Lean on your support system. You're not alone.",
+        "Who are the key people in your support system?",
+        "How do you ask for help when you need it?",
+        "What’s one way you can strengthen your support network?"
+    ],
+    "success": [
+        "🏆 Celebrate small wins! Every step forward is success.",
+        "What does success look like to you?",
+        "How do you measure your progress in recovery?",
+        "What’s one achievement you're proud of?"
+    ],
+    "trust": [
+        "🤝 Trust the process. Your journey is unfolding as it should.",
+        "Who do you trust the most in your support system?",
+        "How has trusting yourself helped in your recovery?",
+        "What does rebuilding trust look like for you?"
+    ],
+    "triggered": [
+        "🚦 Identify your triggers and develop a coping strategy. What helps you stay grounded?",
+        "What are some early warning signs that you’re feeling triggered?",
+        "How do you prepare for triggering situations?",
+        "What support systems help you manage your triggers?"
+    ],
+    "letting-go": [
+        "🍃 Release what no longer serves you and make space for growth.",
+        "What’s one thing you need to let go of today?",
+        "How do you handle emotions tied to past regrets?",
+        "What practices help you embrace the present moment?"
+    ],
+    "habit": [
+        "🔄 Building good habits takes time. Focus on consistency, not perfection.",
+        "What habit are you currently working on improving?",
+        "How do you reinforce positive habits daily?",
+        "What helps you break free from bad habits?"
+    ],
+    "healing": [
+        "🌿 Healing takes time, patience, and self-love.",
+        "What does healing mean to you?",
+        "How do you recognize when you’re making progress?",
+        "What activities help you feel more whole?"
+    ],
+    "perspective": [
+        "🔄 Shift your perspective—challenges can become opportunities.",
+        "How do you reframe negative thoughts?",
+        "What new perspectives have helped in your recovery?",
+        "How does gratitude change your outlook on life?"
+    ],
+    "reflection": [
+        "🔍 Reflect on your progress. Every step matters.",
+        "What has been your biggest lesson in recovery?",
+        "How do you use reflection to guide your future choices?",
+        "What’s one thing you’ve learned about yourself recently?"
+    ],
+    "persistence": [
+        "🚶 Keep moving forward, even if it's just one step at a time.",
+        "What keeps you going when things get difficult?",
+        "How do you handle setbacks while staying committed?",
+        "What’s a time in your life when persistence paid off?"
+    ],
+    "peace": [
+        "☮️ Inner peace comes from acceptance and growth.",
+        "What helps you feel at peace?",
+        "How do you create a peaceful environment for yourself?",
+        "What steps can you take to protect your peace?"
+    ],
+    "mental-clarity": [
+        "🧠 A clear mind leads to better decisions.",
+        "What helps you clear your thoughts?",
+        "How do you stay mentally focused?",
+        "What distracts you the most, and how do you manage it?"
+    ],
+    "wisdom": [
+        "🦉 Learn from your past to build a stronger future.",
+        "What’s the most valuable lesson you've learned?",
+        "How has your past shaped your perspective on life?",
+        "Who do you turn to for wisdom and guidance?"
+    ],
+    "laughter": [
+        "😂 Laughter is healing. Find moments to smile.",
+        "What’s something that made you laugh recently?",
+        "Who in your life always brings a smile to your face?",
+        "How does humor help you through tough times?"
+    ],
+    "nature": [
+        "🌳 Spending time in nature can restore balance.",
+        "How does being outside impact your mental health?",
+        "What’s your favorite outdoor activity?",
+        "How can you incorporate more time in nature into your routine?"
+    ],
+    "choices": [
+        "🎭 Every day, you have the power to make positive choices.",
+        "How do you make decisions that align with your values?",
+        "What’s a past choice you’re proud of?",
+        "How do you handle difficult choices?"
+    ],
+    "gratitude": [
+        "🌻 Gratitude changes everything. What’s one thing you’re thankful for today?",
+        "How does gratitude impact your mood?",
+        "What are three things you’re grateful for this week?",
+        "How do you incorporate gratitude into your daily life?"
+    ],
+    "empowerment": [
+        "💡 Empower yourself by taking control of your choices.",
+        "What’s one way you take ownership of your recovery?",
+        "How do you encourage others to feel empowered?",
+        "What’s a personal strength you’re proud of?"
+    ],
+    "adaptability": [
+        "🔄 Be flexible and open to positive changes.",
+        "How do you adjust when things don’t go as planned?",
+        "What helps you embrace change rather than resist it?",
+        "How can you improve your ability to adapt?"
+    ],
+    "confidence": [
+        "💪 Believe in yourself. You have everything it takes to succeed.",
+        "What helps you feel more confident in yourself?",
+        "How do you handle moments of self-doubt?",
+        "What’s one thing you love about yourself?"
+    ],
+    "energy": [
+        "⚡ Protect your energy and surround yourself with positivity.",
+        "What activities give you energy and make you feel alive?",
+        "How do you recharge when you're feeling drained?",
+        "What people or habits drain your energy the most?"
+    ],
+    "beginning": [
+        "🌅 Every day is a fresh start. Embrace the new opportunities ahead.",
+        "What’s one thing you're looking forward to in this new chapter?",
+        "How do you stay open to new beginnings?",
+        "What’s a lesson from your past that you’ll carry forward?"
+    ],
+    "purpose": [
+        "🎯 Find your purpose in your recovery journey.",
+        "What drives you to keep moving forward?",
+        "How has your sense of purpose changed throughout recovery?",
+        "What’s one step you can take toward fulfilling your purpose?"
+    ],
+    "surrender": [
+        "🕊️ Let go of what you can't control and focus on what you can.",
+        "What do you need to surrender to find peace?",
+        "How do you remind yourself to release control?",
+        "What has surrendering taught you about life?"
+    ],
+    "kindness": [
+        "💛 Be kind to yourself. You deserve love and understanding.",
+        "How do you show kindness to yourself?",
+        "What’s a simple act of kindness you can do today?",
+        "Who in your life inspires you to be kind?"
+    ],
+    "focus": [
+        "🎯 Stay focused on your long-term recovery goals.",
+        "How do you eliminate distractions when working toward a goal?",
+        "What strategies help you improve your focus?",
+        "What’s something you're currently working on staying focused on?"
+    ],
+    "learning": [
+        "📖 Every experience is a lesson. Keep learning and growing.",
+        "What’s one valuable lesson you've learned in recovery?",
+        "How do you apply past experiences to your current journey?",
+        "What new skills or knowledge are you currently exploring?"
+    ],
+    "achievement": [
+        "🏅 Celebrate how far you've come in your journey.",
+        "What’s an achievement you're proud of in your recovery?",
+        "How do you recognize and reward your progress?",
+        "What’s a goal you've reached that once felt impossible?"
+    ],
+    "persistence": [
+        "🚶 Keep moving forward, even if it's just one step at a time.",
+        "What keeps you going when things get difficult?",
+        "How do you handle setbacks while staying committed?",
+        "What’s a time in your life when persistence paid off?"
+    ],
+    "faith": [
+        "🙏 Have faith in yourself and your journey.",
+        "What role does faith play in your recovery?",
+        "How do you strengthen your belief in yourself?",
+        "What keeps you hopeful for the future?"
+    ],
+    "peace": [
+        "☮️ Inner peace comes from acceptance and growth.",
+        "What helps you feel at peace?",
+        "How do you create a peaceful environment for yourself?",
+        "What steps can you take to protect your peace?"
+    ],
+    "clarity": [
+        "🔍 Find clarity by reflecting on your path.",
+        "What helps you clear your thoughts?",
+        "How do you stay mentally focused?",
+        "What distracts you the most, and how do you manage it?"
+    ],
+    "growth-mindset": [
+        "🚀 A growth mindset will lead you to success.",
+        "What’s one area where you're working on personal growth?",
+        "How do you stay open to new learning opportunities?",
+        "What challenges have helped you grow the most?"
+    ],
+    "calm": [
+        "🌊 Find your calm amidst the storm.",
+        "What activities help you feel calm and centered?",
+        "How do you practice mindfulness in daily life?",
+        "What helps you stay calm in stressful situations?"
+    ],
+    "strength": [
+        "💪 Your inner strength will carry you through.",
+        "What’s a challenge that helped you realize your strength?",
+        "How do you remind yourself of your resilience?",
+        "What personal strengths are you most proud of?"
+    ],
+    "boundaries": [
+        "🚧 Setting healthy boundaries is essential for self-care and respect.",
+        "What boundaries help protect your well-being?",
+        "How do you communicate your boundaries to others?",
+        "What challenges do you face when enforcing boundaries?"
+    ],
+    "overwhelmed": [
+        "🌿 Take a step back and breathe. Break things into smaller, manageable tasks.",
+        "How do you manage overwhelming emotions?",
+        "What self-care practices help when you feel overloaded?",
+        "Who can you turn to for support during stressful times?"
+    ],
+    "emotions": [
+        "🌊 Feel your emotions without judgment. They are valid and temporary.",
+        "How do you process difficult emotions in a healthy way?",
+        "What emotions have been the hardest for you to navigate?",
+        "Who supports you when you're experiencing strong emotions?"
+    ],
+    "reflection": [
+        "🔍 Reflect on your progress. Every step matters.",
+        "What has been your biggest lesson in recovery?",
+        "How do you use reflection to guide your future choices?",
+        "What’s one thing you’ve learned about yourself recently?"
+    ],
+    "perseverance": [
+        "🏋️ Keep going, even when it's hard. You’re building strength.",
+        "What keeps you going during tough times?",
+        "How do you stay committed to your goals?",
+        "What’s one moment where you refused to give up?"
+    ],
+    "wisdom": [
+        "🦉 Learn from your past to build a stronger future.",
+        "What’s the most valuable lesson you've learned?",
+        "How has your past shaped your perspective on life?",
+        "Who do you turn to for wisdom and guidance?"
+    ],
+    "self-trust": [
+        "🤝 Trust yourself. You have the answers within you.",
+        "How do you build trust in your own decisions?",
+        "What’s one decision you made that strengthened your self-trust?",
+        "How do you silence self-doubt and listen to your intuition?"
+    ],
+    "rebuilding": [
+        "🏗️ Every setback is an opportunity to rebuild stronger.",
+        "What’s an area of your life you are currently rebuilding?",
+        "How do you stay patient while rebuilding trust or confidence?",
+        "What has been the hardest part of rebuilding after a setback?"
+    ],
+    "celebration": [
+        "🎉 Celebrate your progress—every step counts!",
+        "What’s a recent personal win that made you feel proud?",
+        "How do you reward yourself for small victories?",
+        "Who can you share your successes with today?"
+    ],
+    "self-awareness": [
+        "🔎 Understanding yourself is the first step to growth.",
+        "How well do you understand your emotional triggers?",
+        "What strengths do you see in yourself?",
+        "How do you reflect on your decisions and behaviors?"
+    ],
+    "emotional-intelligence": [
+        "🧠 Emotional intelligence helps us navigate life better.",
+        "How do you regulate your emotions when things get tough?",
+        "What strategies help you express emotions in a healthy way?",
+        "How do you interpret the emotions of those around you?"
+    ],
+    "resilience": [
+        "💪 Resilience is built through challenges, not ease.",
+        "What’s one situation where you bounced back stronger?",
+        "How do you stay grounded when facing setbacks?",
+        "What qualities make you a resilient person?"
+    ],
+    "self-improvement": [
+        "📈 Small improvements every day lead to long-term growth.",
+        "What’s one skill or habit you’re working on right now?",
+        "How do you measure your personal progress?",
+        "What’s a self-improvement goal you’ve achieved recently?"
+    ],
+    "productivity": [
+        "⏳ Work smarter, not harder. Maximize your potential.",
+        "What’s your most effective productivity habit?",
+        "How do you stay focused and avoid distractions?",
+        "What motivates you to complete challenging tasks?"
+    ],
+    "leadership": [
+        "🏆 Leadership is about inspiring, not controlling.",
+        "How do you lead by example in your daily life?",
+        "What leadership qualities do you admire in others?",
+        "How do you handle responsibility and decision-making?"
+    ],
+    "goal-setting": [
+        "🎯 Clear goals create clear direction. Stay focused.",
+        "What are your top 3 goals for the next month?",
+        "How do you break down big goals into smaller steps?",
+        "What strategies help you stay accountable to your goals?"
+    ],
+    "friendship": [
+        "🤝 Strong friendships bring support and joy.",
+        "What qualities do you value in a friend?",
+        "How do you maintain meaningful connections?",
+        "What’s a friendship that has positively shaped your life?"
+    ],
+    "love": [
+        "❤️ Love starts with understanding and respect.",
+        "How do you show love to those you care about?",
+        "What does a healthy relationship look like to you?",
+        "How do you balance love and personal growth?"
+    ],
+    "forgiveness": [
+        "💖 Forgiveness is freeing—it’s for you, not just them.",
+        "What does forgiveness mean to you?",
+        "How do you release resentment and move forward?",
+        "What’s a situation where forgiveness helped you heal?"
+    ],
+    "trust": [
+        "🤝 Trust is built over time but can be broken in a moment.",
+        "What builds trust in a relationship?",
+        "How do you rebuild trust after it’s been damaged?",
+        "What do you do when trust has been broken?"
+    ],
+     "critical-thinking": [
+        "💡 Thinking deeply helps you make better decisions.",
+        "How do you evaluate information before forming opinions?",
+        "What helps you stay open-minded in discussions?",
+        "How do you challenge your own biases?"
+    ],
+    "mental-clarity": [
+        "🧠 A clear mind leads to focused action.",
+        "What helps you organize your thoughts?",
+        "How do you handle mental fog or overwhelm?",
+        "What practices bring you mental clarity?"
+    ],
+    "adaptability": [
+        "🔄 Life is unpredictable—adaptability is key to success.",
+        "How do you handle unexpected changes?",
+        "What helps you stay flexible in difficult situations?",
+        "How do you adjust to new environments or challenges?"
+    ],
+    "faith": [
+        "🙏 Faith can guide us through uncertainty.",
+        "What role does faith play in your daily life?",
+        "How has faith or spirituality influenced your decisions?",
+        "What gives you a sense of inner peace?"
+    ],
+    "purpose": [
+        "🎯 A sense of purpose gives life direction.",
+        "What do you believe is your purpose in life?",
+        "How do you align your actions with your purpose?",
+        "What drives you to keep going, even in tough times?"
+    ],
+    "gratitude": [
+        "🌻 Gratitude changes perspective and enhances joy.",
+        "What’s something small you’re grateful for today?",
+        "How does gratitude impact your mood and outlook?",
+        "What practices help you cultivate gratitude?"
+    ],
+    "inner-peace": [
+        "☮️ True peace comes from within, not external things.",
+        "What activities bring you a deep sense of calm?",
+        "How do you create peace in moments of chaos?",
+        "What’s one practice that helps you maintain balance?"
+    ],
+    "identity": [
+        "🧩 Understanding yourself is a lifelong journey.",
+        "What aspects of your identity do you embrace most?",
+        "How has your identity evolved over the years?",
+        "What experiences have shaped the way you see yourself?"
+    ],
+    "self-expression": [
+        "🎨 Your voice and creativity matter—express yourself!",
+        "How do you express yourself in your daily life?",
+        "What creative outlets help you feel understood?",
+        "How do you stay authentic in a world full of expectations?"
+    ],
+    "courage": [
+        "🦁 Courage is not the absence of fear, but action despite it.",
+        "What’s the bravest thing you’ve ever done?",
+        "How do you push through fear and self-doubt?",
+        "What fears are holding you back from something important?"
+    ],
+    "intuition": [
+        "🔮 Trusting your intuition can lead to powerful decisions.",
+        "When has following your intuition helped you?",
+        "How do you distinguish intuition from fear?",
+        "What practices help you connect with your inner wisdom?"
+    ],
+     "boundaries": [
+        "🚧 Healthy boundaries protect your peace and well-being.",
+        "What boundaries do you need to set in your life right now?",
+        "How do you enforce your personal boundaries with others?",
+        "What’s the hardest part about maintaining boundaries?"
+    ],
+    "emotional-protection": [
+        "🛡️ Protect your energy—guard your emotions wisely.",
+        "How do you handle people who drain your energy?",
+        "What strategies help you shield yourself from negativity?",
+        "How do you practice emotional self-defense?"
+    ],
+    "letting-go": [
+        "🍃 Letting go frees you from past burdens.",
+        "What’s something you’ve been holding onto for too long?",
+        "How do you emotionally detach from things outside your control?",
+        "What practice helps you release resentment or pain?"
+    ],
+    "willpower": [
+        "🔥 Willpower strengthens with practice. Stay focused.",
+        "How do you maintain discipline when faced with temptation?",
+        "What’s a time when your willpower helped you achieve something big?",
+        "What strategies help you resist unhealthy urges?"
+    ],
+    "mental-toughness": [
+        "🧠 Strength isn't about never breaking—it's about always rebuilding.",
+        "What’s the hardest challenge you’ve overcome mentally?",
+        "How do you train your mind to stay resilient?",
+        "What mindset shifts have made you stronger?"
+    ],
+    "self-control": [
+        "⏳ Self-control leads to self-mastery.",
+        "How do you regulate your emotions when you’re overwhelmed?",
+        "What’s an area in life where you’d like to build more self-control?",
+        "What techniques help you stay disciplined in difficult situations?"
+    ],
+     "healing": [
+        "🌱 Healing is a journey, not a destination.",
+        "What’s a past experience that you’re still working through?",
+        "How do you create a safe space for your own healing?",
+        "What’s one step you can take toward emotional healing today?"
+    ],
+    "forgiveness": [
+        "💖 Forgiveness is about freeing yourself, not others.",
+        "How do you work toward forgiving someone who hurt you?",
+        "What role does self-forgiveness play in your healing?",
+        "What emotions come up when you think about forgiveness?"
+    ],
+    "closure": [
+        "🔚 Closure doesn’t come from others—it comes from within.",
+        "What unresolved feelings are still weighing you down?",
+        "How do you seek closure for something left unfinished?",
+        "What helps you make peace with your past?"
+    ],
+    "fairness": [
+        "⚖️ Life isn’t always fair, but integrity always matters.",
+        "What does fairness mean to you?",
+        "How do you handle situations where you feel wronged?",
+        "What role does fairness play in your relationships?"
+    ],
+    "morality": [
+        "🛤️ The right path isn’t always the easiest one.",
+        "How do you determine what’s morally right in tough situations?",
+        "What’s a moral value you refuse to compromise on?",
+        "What experiences have shaped your sense of right and wrong?"
+    ],
+    "justice": [
+        "⚖️ Justice is about balance—seeking what’s fair for all.",
+        "How do you advocate for fairness in your daily life?",
+        "What’s a time when you stood up for what you believed in?",
+        "What changes would you like to see in the world?"
+    ],
+    "communication": [
+        "🗣️ Effective communication builds stronger relationships.",
+        "How do you ensure your words align with your intentions?",
+        "What’s a time when poor communication caused a misunderstanding?",
+        "How do you improve your listening skills?"
+    ],
+    "assertiveness": [
+        "💬 Speaking up for yourself is an act of self-respect.",
+        "How do you express your needs without feeling guilty?",
+        "What’s a situation where you wish you had been more assertive?",
+        "What helps you find confidence in difficult conversations?"
+    ],
+    "conflict-resolution": [
+        "🤝 Conflict isn’t about winning—it’s about understanding.",
+        "What strategies help you resolve conflicts peacefully?",
+        "How do you handle disagreements with loved ones?",
+        "What do you do when someone refuses to see your perspective?"
+    ],
+     "curiosity": [
+        "🔍 Curiosity fuels lifelong learning.",
+        "What’s something you’ve always wanted to learn more about?",
+        "How do you stay open-minded when learning new ideas?",
+        "What topics excite your intellectual curiosity the most?"
+    ],
+    "problem-solving": [
+        "🧠 Every problem has a solution—you just have to find it.",
+        "How do you approach solving difficult problems?",
+        "What’s a creative solution you’ve come up with recently?",
+        "How do you stay calm and logical in high-pressure situations?"
+    ],
+    "wisdom": [
+        "🦉 Wisdom is earned through experience, not just knowledge.",
+        "What’s the most valuable lesson life has taught you?",
+        "How do you pass wisdom onto others?",
+        "What past mistakes have become your greatest lessons?"
+    ], 
+    "mindfulness": [
+        "🌿 The present moment is the only place where life exists.",
+        "How do you bring yourself back to the present when your mind wanders?",
+        "What mindfulness practices help you feel grounded?",
+        "What’s a small moment of joy you experienced today?"
+    ],
+    "stillness": [
+        "🌊 Inner peace comes from embracing stillness.",
+        "How comfortable are you with silence and stillness?",
+        "What practices help you slow down and relax?",
+        "How do you calm your mind when it feels chaotic?"
+    ], 
+    "discipline": [
+        "⚡ Small consistent actions create great results.",
+        "What habits help you stay disciplined?",
+        "How do you push through when motivation fades?",
+        "What’s a time when your discipline paid off?"
+    ],
+    "consistency": [
+        "🔄 Success is built on consistency, not perfection.",
+        "What’s a routine that helps you stay on track?",
+        "How do you handle days when you feel off your game?",
+        "What’s a small habit that has made a big difference in your life?"
+    ],
+    "habit-formation": [
+        "🔗 Your habits shape your future.",
+        "What’s one new habit you want to develop?",
+        "How do you break bad habits and replace them with better ones?",
+        "What strategies help you stick to new routines?"
+    ], 
+    "creativity": [
+        "🎨 Creativity is intelligence having fun.",
+        "What’s a creative project you’d love to start?",
+        "How do you overcome creative blocks?",
+        "What inspires your creativity the most?"
+    ],
+    "problem-solving": [
+        "🧩 Every challenge has a solution waiting to be found.",
+        "How do you approach difficult problems?",
+        "What’s a unique solution you’ve come up with recently?",
+        "How do you reframe challenges to see new opportunities?"
+    ],
+    "thinking-outside-the-box": [
+        "🚀 Innovation starts when we leave the comfort zone.",
+        "What’s a time when you had an unconventional idea that worked?",
+        "How do you challenge traditional ways of thinking?",
+        "What areas of your life could use a fresh perspective?"
+    ],
+     "emotional-safety": [
+        "🛡️ You deserve to feel safe and secure.",
+        "What environments make you feel emotionally safe?",
+        "How do you establish trust in relationships?",
+        "What boundaries help you protect your emotional well-being?"
+    ],
+    "healing-trauma": [
+        "🌿 Healing takes time—be gentle with yourself.",
+        "What’s a part of your past that you’re still working through?",
+        "How do you create a sense of safety within yourself?",
+        "What’s a healing practice that has worked well for you?"
+    ],
+    "navigating-triggers": [
+        "🚦 Triggers are signposts pointing to unhealed wounds.",
+        "What are some of your emotional triggers?",
+        "How do you self-soothe when triggered?",
+        "What coping strategies help you feel more in control?"
+    ],
+     "breaking-cycles": [
+        "🔄 The first step to change is recognizing the pattern.",
+        "What’s a repeated pattern in your life that you’d like to break?",
+        "How do you interrupt old habits that no longer serve you?",
+        "What support do you need to break free from unhealthy cycles?"
+    ],
+    "self-sabotage": [
+        "🛑 Don’t let fear disguise itself as logic.",
+        "What’s one way you’ve sabotaged your own progress?",
+        "How do you catch yourself before falling into self-sabotaging behavior?",
+        "What’s a healthier alternative to your self-sabotaging habit?"
+    ],
+    "overcoming-fear": [
+        "😨 Fear is just excitement without breath.",
+        "What fears hold you back the most?",
+        "How do you challenge the beliefs that keep you stuck?",
+        "What’s one small step you can take to confront your fear today?"
+    ],
+     "energy-management": [
+        "⚡ Protect your energy like it's gold.",
+        "What activities drain your energy the most?",
+        "How do you replenish your energy when you feel depleted?",
+        "What people or habits give you the most energy?"
+    ],
+    "vibration-frequency": [
+        "🌟 You attract what you resonate with.",
+        "What emotions raise your personal frequency?",
+        "How do you protect yourself from negative energy?",
+        "What daily habits help you stay in a positive state of mind?"
+    ],
+    "law-of-attraction": [
+        "🌍 Your thoughts create your reality.",
+        "How do you align your thoughts with what you want?",
+        "What’s something positive you manifested in your life?",
+        "How can you use gratitude to attract better experiences?"
+    ],
+    "decision-making": [
+        "🤔 Every choice shapes your future.",
+        "How do you weigh your options when making decisions?",
+        "What’s the best decision you’ve made recently?",
+        "What role does intuition play in your choices?"
+    ],
+    "taking-risks": [
+        "⚖️ Sometimes, the biggest risks lead to the greatest rewards.",
+        "What’s a risk you regret not taking?",
+        "How do you balance fear and excitement in risk-taking?",
+        "What’s a risk that paid off for you?"
+    ],
+    "life-path": [
+        "🛤️ Your journey is unique—trust your direction.",
+        "How do you feel about the path your life is taking?",
+        "What adjustments could help you feel more aligned with your purpose?",
+        "If you could change one thing about your journey, what would it be?"
+    ] "time-management": [
+        "⏳ How you spend your time is how you spend your life.",
+        "What’s one way you can manage your time better?",
+        "How do you stay focused on what matters most?",
+        "What’s your biggest time-waster?"
+    ],
+    "vision-planning": [
+        "👁️ Clarity of vision creates clarity of action.",
+        "Where do you see yourself in five years?",
+        "What steps can you take today to bring your vision closer to reality?",
+        "What’s holding you back from pursuing your dreams?"
+    ],
+    "long-term-goals": [
+        "🎯 Small steps lead to big achievements.",
+        "What’s a major life goal you’re working toward?",
+        "How do you stay motivated on long-term goals?",
+        "What milestones have you reached so far?"
+    ],
+     "influence": [
+        "🌍 Your energy influences everyone around you.",
+        "What impact do you have on those around you?",
+        "How do you inspire and motivate others?",
+        "What legacy do you want to leave behind?"
+    ],
+    "leadership": [
+        "🏆 True leadership is about empowering others.",
+        "What leadership qualities do you admire?",
+        "How do you lead by example in your daily life?",
+        "What’s a leadership lesson you’ve learned the hard way?"
+    ],
+     "shadow-self": [
+        "🌑 Facing your shadow is the key to self-mastery.",
+        "What parts of yourself do you struggle to accept?",
+        "How do you integrate your ‘negative’ traits in a healthy way?",
+        "What’s a fear that still lingers in your subconscious?"
+    ],
+    "shadow-self": [
+        "🌑 Facing your shadow is the key to self-mastery.",
+        "What parts of yourself do you struggle to accept?",
+        "How do you integrate your ‘negative’ traits in a healthy way?",
+        "What’s a fear that still lingers in your subconscious?"
+    ],
+    "inner-child": [
+        "👶 Your inner child still lives within you.",
+        "What childhood wounds still affect your adult life?",
+        "How do you nurture and comfort your inner child?",
+        "What’s a childhood dream you’d love to revisit?"
+     ]
+};
+
+            for (let key in responses) {
+                if (input.includes(key)) {
+                    let responseArray = responses[key];
+                    return responseArray[Math.floor(Math.random() * responseArray.length)];
+                }
+            }
+
+            return "I'm here to support you. Can you tell me more about how you're feeling?";
+        }
+
+        function setGoal() {
+            var goalInput = document.getElementById("goalInput").value.trim();
+            if (goalInput === "") return;
+            localStorage.setItem("recoveryGoal", goalInput);
+            document.getElementById("savedGoal").textContent = "🎯 Your Goal: " + goalInput;
+        }
+
+        window.onload = function() {
+            var savedGoal = localStorage.getItem("recoveryGoal");
+            if (savedGoal) {
+                document.getElementById("savedGoal").textContent = "🎯 Your Goal: " + savedGoal;
+            }
+        };
+    </script>
+
+</body>
+</html>
